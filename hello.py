@@ -1,34 +1,47 @@
 import os
+from random import choice
 from flask import Flask, jsonify, send_from_directory
 from flask_sse import sse
 
 app = Flask(__name__, static_url_path='')
-app.config["REDIS_URL"] = os.environ.get("REDIS_URL")
-app.register_blueprint(sse, url_prefix='/stream')
 
-names = []
+article_map = {}
+
+drawn_key = ''
 
 
 @app.route('/')
 def root():
-    return send_from_directory('static', 'index.html')
+    if (not drawn_key in article_map):
+        return "No article is currently drawn."
+    return article_map[drawn_key]
 
 
-@app.route('/hello')
-def publish_hello():
-    sse.publish({"message": "Hello!"}, type='greeting')
-    return "Message sent!"
+@app.route('/players')
+def players():
+    return jsonify(list(article_map))
 
 
-@app.route("/api/list")
-def list():
-    return jsonify(names)
+@app.route('/reset')
+def reset():
+    global drawn_key
+    global article_map
+    drawn_key = ''
+    article_map = {}
 
 
-@app.route("/api/add/<string:name>")
-def add(name):
-    names.append(name)
-    return ''
+@app.route('/draw')
+def draw():
+    global drawn_key
+    drawn_key = choice(list(article_map))
+    return 'Drawn!'
+
+
+@app.route("/add/<string:name>/<string:article>")
+def add(name, article):
+    global article_map
+    article_map[name] = article
+    return 'Your article "' + article + '" is entered.'
 
 
 if __name__ == "__main__":
