@@ -22,12 +22,28 @@ def players():
     return jsonify(list(article_map))
 
 
+@app.route('/debug')
+def debug():
+    return jsonify(article_map)
+
+
 @app.route('/reset')
 def reset():
     global drawn_key
     global article_map
     drawn_key = ''
     article_map = {}
+    return 'Reset'
+
+
+@app.route('/pop/<string:name>')
+def pop(name):
+    global article_map
+    if (name in article_map):
+        del article_map[name]
+        return "Deleted " + name
+    else:
+        return "Key not found"
 
 
 @app.route('/draw')
