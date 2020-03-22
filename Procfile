@@ -1,1 +1,1 @@
-web: gunicorn hello:app
+web: gunicorn --worker-class gevent hello:app

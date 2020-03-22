@@ -67,6 +67,7 @@ def reset():
     Draw.query.delete()
     db.session.commit()
     publish_players()
+    publish_quest()
     return 'Reset'
 
 
