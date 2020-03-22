@@ -4,28 +4,17 @@
 <head>
     <script type="text/javascript" src="static/motpal.js"></script>
     <script type="text/javascript">
-        function connect_stream(timeout = 250) {
-            console.log("Connecting to stream...");
-            var source = new EventSource("/stream");
-            source.addEventListener("player_update", function (event) {
-                update_player_list(JSON.parse(event.data));
-            }, false);
-            source.addEventListener("error", async function (event) {
-                console.log("Connection lost. Trying again in " + timeout + " ms.");
-                await new Promise(r => setTimeout(r, timeout));
-                connect_stream(timeout);
-            }, false);
-        }
-
         window.onload = function () {
             load_players();
+            load_quest();
             connect_stream();
         };
     </script>
+    <link rel="stylesheet" href="static/style.css" />
 </head>
 
 <body>
-    <iframe name="iframe" style="display: none;"></iframe>
+    <iframe name="iframe" class="hidden"></iframe>
     <h1>Most of these people are lying</h1>
     <h2>Your entry:</h2>
     <form action="add" method="POST" target="iframe">
@@ -34,7 +23,11 @@
         <input type="submit" value="Enter" />
     </form>
     <h2>Active Players:</h2>
-    <ul id="player_list"></ul>
+    <ul id="player-list"></ul>
+    <div id="quest-block" class="hidden">
+        <h3>Active Quest:</h3>
+        <h4 id="quest-text"></h4>
+    </div>
 </body>
 
 </html>

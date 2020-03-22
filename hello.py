@@ -34,7 +34,7 @@ class Player(db.Model):
         self.article = article
 
     def __repr__(self):
-        return '{}: {}'.format(name, article)
+        return '{}: {}'.format(self.name, self.article)
 
 
 @app.route('/')
@@ -44,6 +44,7 @@ def root():
 
 @app.route('/static/<string:file>')
 def load_static(file):
+    print('serving: {}'.format(file))
     return send_from_directory('static', file)
 
 
@@ -69,27 +70,6 @@ def reset():
     return 'Reset'
 
 
-@app.route('/pop/<int:id>')
-def pop(id):
-    Player.query.filter_by(id=id).delete()
-    Draw.query.filter_by(id=id).delete()
-    db.session.commit()
-    publish_players()
-    return 'Done'
-
-
-@app.route('/draw')
-def draw():
-    chosen_one = Player.query.order_by(func.random()).first()
-    q = Draw.query.first()
-    if q != None:
-        q.id = chosen_one.id
-    else:
-        db.session.add(Draw(chosen_one.id))
-    db.session.commit()
-    return 'Drawn: {}'.format(chosen_one.id)
-
-
 @app.route('/add', methods=['POST'])
 def add_post():
     data = request.form
@@ -103,6 +83,46 @@ def add(name, article):
     db.session.commit()
     publish_players()
     return 'Your article "' + article + '" is entered.'
+
+
+@app.route('/pop/<int:id>')
+def pop(id):
+    Player.query.filter_by(id=id).delete()
+    Draw.query.filter_by(id=id).delete()
+    db.session.commit()
+    publish_players()
+    return 'Done'
+
+
+def quest():
+    q = Draw.query.first()
+    if q != None:
+        p = Player.query.filter_by(id=q.id).first()
+        return {'active': True, 'article': p.article}
+    else:
+        return {'active': False}
+
+
+@app.route('/quest')
+def quest_json():
+    return jsonify(quest())
+
+
+def publish_quest():
+    sse.publish(quest(), type='quest_update')
+
+
+@app.route('/draw')
+def draw():
+    chosen_one = Player.query.order_by(func.random()).first()
+    q = Draw.query.first()
+    if q != None:
+        q.id = chosen_one.id
+    else:
+        db.session.add(Draw(chosen_one.id))
+    db.session.commit()
+    publish_quest()
+    return 'Drawn: {}'.format(chosen_one.id)
 
 
 if __name__ == "__main__":
