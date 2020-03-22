@@ -36,12 +36,12 @@ class Player(db.Model):
 
 @app.route('/')
 def root():
-    q = Draw.query.first()
-    if q != None:
-        p = Player.query.filter_by(id=q.id).first()
-        return p.article
-    else:
-        return 'No article is currently drawn.'
+    return load_static('index.html')
+
+
+@app.route('/static/<string:file>')
+def load_static(file):
+    return send_from_directory('static', file)
 
 
 @app.route('/players')
