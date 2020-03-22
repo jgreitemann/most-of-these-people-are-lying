@@ -1,62 +1,89 @@
 import os
 from random import choice
 from flask import Flask, jsonify, send_from_directory
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 from flask_sse import sse
 
 app = Flask(__name__, static_url_path='')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-article_map = {}
 
-drawn_key = ''
+class Draw(db.Model):
+    __tablename__ = "draw"
+    draw_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer)
+
+    def __init__(self, id):
+        self.id = id
+
+
+class Player(db.Model):
+    __tablename__ = "players"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True)
+    article = db.Column(db.String(120))
+
+    def __init__(self, name, article):
+        self.name = name
+        self.article = article
+
+    def __repr__(self):
+        return '{}: {}'.format(name, article)
 
 
 @app.route('/')
 def root():
-    if (not drawn_key in article_map):
-        return "No article is currently drawn."
-    return article_map[drawn_key]
+    q = Draw.query.first()
+    if q != None:
+        p = Player.query.filter_by(id=q.id).first()
+        return p.article
+    else:
+        return 'No article is currently drawn.'
 
 
 @app.route('/players')
 def players():
-    return jsonify(list(article_map))
-
-
-@app.route('/debug')
-def debug():
-    return jsonify(article_map)
+    objs = Player.query.order_by(Player.id)
+    return jsonify([p.name for p in objs])
 
 
 @app.route('/reset')
 def reset():
-    global drawn_key
-    global article_map
-    drawn_key = ''
-    article_map = {}
+    Player.query.delete()
+    Draw.query.delete()
+    db.session.commit()
     return 'Reset'
 
 
-@app.route('/pop/<string:name>')
-def pop(name):
-    global article_map
-    if (name in article_map):
-        del article_map[name]
-        return "Deleted " + name
-    else:
-        return "Key not found"
+@app.route('/pop/<int:id>')
+def pop(id):
+    Player.query.filter_by(id=id).delete()
+    Draw.query.filter_by(id=id).delete()
+    db.session.commit()
+    return 'Done'
 
 
 @app.route('/draw')
 def draw():
-    global drawn_key
-    drawn_key = choice(list(article_map))
-    return 'Drawn!'
+    chosen_one = Player.query.order_by(func.random()).first()
+    q = Draw.query.first()
+    if q != None:
+        q.id = chosen_one.id
+    else:
+        db.session.add(Draw(chosen_one.id))
+    db.session.commit()
+    return 'Drawn: {}'.format(chosen_one.id)
 
 
 @app.route("/add/<string:name>/<string:article>")
 def add(name, article):
-    global article_map
-    article_map[name] = article
+    Player.query.filter_by(name=name).delete()
+    p = Player(name, article)
+    db.session.add(p)
+    db.session.commit()
     return 'Your article "' + article + '" is entered.'
 
 
