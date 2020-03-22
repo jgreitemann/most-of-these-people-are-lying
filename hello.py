@@ -8,6 +8,9 @@ from flask_sse import sse
 app = Flask(__name__, static_url_path='')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['REDIS_URL'] = os.environ.get('REDIS_URL')
+app.register_blueprint(sse, url_prefix='/stream')
+
 db = SQLAlchemy(app)
 
 
@@ -44,10 +47,17 @@ def load_static(file):
     return send_from_directory('static', file)
 
 
-@app.route('/players')
 def players():
-    objs = Player.query.order_by(Player.id)
-    return jsonify([p.name for p in objs])
+    return [p.name for p in Player.query.order_by(Player.id)]
+
+
+@app.route('/players')
+def players_json():
+    return jsonify(players())
+
+
+def publish_players():
+    sse.publish(players(), type='player_update')
 
 
 @app.route('/reset')
@@ -63,6 +73,7 @@ def pop(id):
     Player.query.filter_by(id=id).delete()
     Draw.query.filter_by(id=id).delete()
     db.session.commit()
+    publish_players()
     return 'Done'
 
 
@@ -84,6 +95,7 @@ def add(name, article):
     p = Player(name, article)
     db.session.add(p)
     db.session.commit()
+    publish_players()
     return 'Your article "' + article + '" is entered.'
 
 
