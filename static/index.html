@@ -13,7 +13,7 @@
             source.addEventListener("error", async function (event) {
                 console.log("Connection lost. Trying again in " + timeout + " ms.");
                 await new Promise(r => setTimeout(r, timeout));
-                connect_stream(timeout * 2);
+                connect_stream(timeout);
             }, false);
         }
 
@@ -25,7 +25,15 @@
 </head>
 
 <body>
-    <h1>Players:</h1>
+    <iframe name="iframe" style="display: none;"></iframe>
+    <h1>Most of these people are lying</h1>
+    <h2>Your entry:</h2>
+    <form action="add" method="POST" target="iframe">
+        <input type="text" id="name-text" name="name" />
+        <input type="text" id="article-text" name="article" />
+        <input type="submit" value="Enter" />
+    </form>
+    <h2>Active Players:</h2>
     <ul id="player_list"></ul>
 </body>
 

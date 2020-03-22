@@ -1,6 +1,6 @@
 import os
 from random import choice
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from flask_sse import sse
@@ -65,6 +65,7 @@ def reset():
     Player.query.delete()
     Draw.query.delete()
     db.session.commit()
+    publish_players()
     return 'Reset'
 
 
@@ -89,7 +90,12 @@ def draw():
     return 'Drawn: {}'.format(chosen_one.id)
 
 
-@app.route("/add/<string:name>/<string:article>")
+@app.route('/add', methods=['POST'])
+def add_post():
+    data = request.form
+    return add(data['name'], data['article'])
+
+
 def add(name, article):
     Player.query.filter_by(name=name).delete()
     p = Player(name, article)
