@@ -8,7 +8,7 @@ function update_player_list(players) {
     entry.appendChild(span);
     var delete_button = document.createElement('input');
     delete_button.type = 'button';
-    delete_button.value = 'x';
+    delete_button.value = '';
     delete_button.onclick = () => {
       delete_player(player.id);
     };

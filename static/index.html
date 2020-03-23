@@ -11,11 +11,12 @@
         };
     </script>
     <link rel="stylesheet" href="static/style.css" />
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <iframe name="iframe" class="hidden"></iframe>
-    <h1>Most of these people are lying</h1>
+    <h1>Most of <em>these</em> people are lying</h1>
     <h2>Your entry:</h2>
     <form action="add" method="POST" target="iframe">
         <input type="text" id="name-text" name="name" />
@@ -26,7 +27,7 @@
     <ul id="player-list"></ul>
     <div id="quest-block" class="hidden">
         <h3>Active Quest:</h3>
-        <h4 id="quest-text"></h4>
+        <h1 id="quest-text"></h1>
     </div>
 </body>
 
