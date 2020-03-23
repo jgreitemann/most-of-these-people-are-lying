@@ -3,7 +3,16 @@ function update_player_list(players) {
   player_list.innerHTML = '';
   players.forEach(player => {
     var entry = document.createElement('li');
-    entry.innerText = player;
+    var span = document.createElement('span');
+    span.innerText = player.name;
+    entry.appendChild(span);
+    var delete_button = document.createElement('input');
+    delete_button.type = 'button';
+    delete_button.value = 'x';
+    delete_button.onclick = () => {
+      delete_player(player.id);
+    };
+    entry.appendChild(delete_button);
     player_list.appendChild(entry);
   });
 }
@@ -14,6 +23,11 @@ function load_players() {
       .then(response => response.text())
       .then(JSON.parse)
       .then(update_player_list);
+}
+
+function delete_player(id) {
+  var request = new Request('/pop/' + id);
+  fetch(request);
 }
 
 function update_quest(quest) {

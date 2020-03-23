@@ -44,12 +44,11 @@ def root():
 
 @app.route('/static/<string:file>')
 def load_static(file):
-    print('serving: {}'.format(file))
     return send_from_directory('static', file)
 
 
 def players():
-    return [p.name for p in Player.query.order_by(Player.id)]
+    return [{'id': p.id, 'name': p.name} for p in Player.query.order_by(Player.id)]
 
 
 @app.route('/players')
@@ -89,9 +88,15 @@ def add(name, article):
 @app.route('/pop/<int:id>')
 def pop(id):
     Player.query.filter_by(id=id).delete()
-    Draw.query.filter_by(id=id).delete()
+    q = Draw.query.filter_by(id=id)
+    deleted_quest = False
+    if q.first() != None:
+        q.delete()
+        deleted_quest = True
     db.session.commit()
     publish_players()
+    if deleted_quest:
+        publish_quest()
     return 'Done'
 
 
