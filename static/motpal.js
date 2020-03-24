@@ -1,7 +1,22 @@
+var old_player_ids = [];
+
 function update_player_list(players) {
+  var player_ids = players.map(p => p.id);
+  var new_players = players.filter(p => !old_player_ids.includes(p.id));
+  var dead_player_ids = old_player_ids.filter(i => !player_ids.includes(i));
   var player_list = document.getElementById('player-list');
-  player_list.innerHTML = '';
-  players.forEach(player => {
+
+  // remove dead players
+  for (var i = 0; i < player_list.childElementCount; ++i) {
+    if (!player_ids.includes(old_player_ids[i])) {
+      var dead_player_node = player_list.childNodes[i];
+      dead_player_node.classList.add('disappearing');
+      setTimeout(() => player_list.removeChild(dead_player_node), 500);
+    }
+  }
+
+  // add new players
+  new_players.forEach(player => {
     var entry = document.createElement('li');
     var span = document.createElement('span');
     span.innerText = player.name;
@@ -13,8 +28,12 @@ function update_player_list(players) {
       delete_player(player.id);
     };
     entry.appendChild(delete_button);
+    entry.classList.add('disappearing');
+    setTimeout(() => entry.classList.remove('disappearing'), 500);
     player_list.appendChild(entry);
   });
+
+  old_player_ids = player_ids;
 }
 
 function load_players() {
