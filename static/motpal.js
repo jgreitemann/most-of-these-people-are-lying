@@ -69,7 +69,7 @@ function load_quest() {
       .then(update_quest);
 }
 
-function connect_stream(timeout = 250) {
+function connect_stream() {
   console.log('Connecting to stream...');
   var source = new EventSource('/stream');
   source.addEventListener('player_update', function(event) {
@@ -78,10 +78,11 @@ function connect_stream(timeout = 250) {
   source.addEventListener('quest_update', function(event) {
     update_quest(JSON.parse(event.data));
   }, false);
-  source.addEventListener('error', async function(event) {
-    console.log('Connection lost. Trying again in ' + timeout + ' ms.');
-    await new Promise(r => setTimeout(r, timeout));
-    connect_stream(timeout);
+  source.addEventListener('open', function(event) {
+    console.log('Connected!');
+  }, false);
+  source.addEventListener('error', function(event) {
+    console.log('Connection lost. Reconnecting...');
   }, false);
 }
 
