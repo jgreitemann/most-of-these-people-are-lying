@@ -8,6 +8,12 @@
             load_players();
             load_quest();
             connect_stream();
+
+            document.getElementById('add-player-button').onclick = show_modal;
+            document.getElementById('modal-overlay').onclick = hide_modal;
+            document.getElementById('add-player-form').onsubmit = hide_modal;
+            document.getElementById('add-player-form').onclick = event => event.stopPropagation();
+            document.addEventListener('keyup', event => event.code == 'Period' && show_modal());
         };
     </script>
     <link rel="stylesheet" href="static/style.css" />
@@ -16,15 +22,25 @@
 
 <body>
     <iframe name="iframe" class="hidden"></iframe>
+    <div id="modal-overlay" class="hidden">
+    </div>
     <h1>Most of <em>these</em> people are lying</h1>
-    <h2>Your entry:</h2>
-    <form action="add" method="POST" target="iframe">
-        <input type="text" id="name-text" name="name" />
-        <input type="text" id="article-text" name="article" />
-        <input type="submit" value="Enter" />
-    </form>
-    <h2>Active Players:</h2>
-    <ul id="player-list"></ul>
+    <ul id="player-list">
+        <li id="add-player-button">
+            <form id="add-player-form" action="add" method="POST" target="iframe" class="hidden">
+                <div id="add-player-dialog">
+                    <input type="text" id="name-text" name="name" placeholder="Player name">
+                    <span>
+                        <input type="text" id="article-text" name="article" placeholder="Wikipedia article">
+                        <a target="_blank" rel="noopener noreferrer"
+                            href="https://en.wikipedia.org/wiki/Special:Random"><input type="button" id="random-button"
+                                value=""></a>
+                    </span>
+                    <input type="submit" value="Enter">
+                </div>
+            </form>
+        </li>
+    </ul>
     <div id="quest-block" class="hidden">
         <h3>Active Quest:</h3>
         <h1 id="quest-text"></h1>

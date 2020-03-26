@@ -5,11 +5,12 @@ function update_player_list(players) {
   var new_players = players.filter(p => !old_player_ids.includes(p.id));
   var dead_player_ids = old_player_ids.filter(i => !player_ids.includes(i));
   var player_list = document.getElementById('player-list');
+  var add_player_button = document.getElementById('add-player-button');
 
   // remove dead players
-  for (var i = 0; i < player_list.childElementCount; ++i) {
+  for (var i = 0; i < old_player_ids.length; ++i) {
     if (!player_ids.includes(old_player_ids[i])) {
-      var dead_player_node = player_list.childNodes[i];
+      var dead_player_node = player_list.children[i];
       dead_player_node.classList.add('disappearing');
       setTimeout(() => player_list.removeChild(dead_player_node), 500);
     }
@@ -30,7 +31,7 @@ function update_player_list(players) {
     entry.appendChild(delete_button);
     entry.classList.add('disappearing');
     setTimeout(() => entry.classList.remove('disappearing'), 500);
-    player_list.appendChild(entry);
+    player_list.insertBefore(entry, add_player_button);
   });
 
   old_player_ids = player_ids;
@@ -82,4 +83,36 @@ function connect_stream(timeout = 250) {
     await new Promise(r => setTimeout(r, timeout));
     connect_stream(timeout);
   }, false);
+}
+
+function show_modal() {
+  var overlay = document.getElementById('modal-overlay');
+  var form = document.getElementById('add-player-form');
+  var dialog = document.getElementById('add-player-dialog');
+  var name_text = document.getElementById('name-text');
+  var article_text = document.getElementById('article-text')
+
+  name_text.value = '';
+  article_text.value = '';
+
+  overlay.classList.remove('hidden');
+  form.classList.remove('hidden');
+  name_text.focus();
+  setTimeout(() => {
+    overlay.classList.add('modal');
+    dialog.classList.add('modal');
+  }, 100);
+}
+
+function hide_modal() {
+  var overlay = document.getElementById('modal-overlay');
+  var form = document.getElementById('add-player-form');
+  var dialog = document.getElementById('add-player-dialog');
+
+  overlay.classList.remove('modal');
+  dialog.classList.remove('modal');
+  setTimeout(() => {
+    overlay.classList.add('hidden');
+    form.classList.add('hidden');
+  }, 250);
 }
