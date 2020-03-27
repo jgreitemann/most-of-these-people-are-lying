@@ -34,6 +34,13 @@ function update_player_list(players) {
     player_list.insertBefore(entry, add_player_button);
   });
 
+  // show / hide quest button
+  if (player_ids.length >= 2) {
+    show_quest();
+  } else {
+    hide_quest();
+  }
+
   old_player_ids = player_ids;
 }
 
@@ -46,19 +53,32 @@ function load_players() {
 }
 
 function delete_player(id) {
-  var request = new Request('/pop/' + id);
+  var request = new Request('/players/pop/' + id);
   fetch(request);
 }
 
 function update_quest(quest) {
-  var quest_block = document.getElementById('quest-block');
+  var quest_text = document.getElementById('quest-text');
   if (quest.active) {
-    var quest_text = document.getElementById('quest-text');
-    quest_text.innerText = quest.article;
-    quest_block.classList.remove('hidden')
+    if (quest_text.innerText != quest.article) {
+      quest_text.classList.add('collapsed');
+      setTimeout(() => {
+        quest_text.innerText = quest.article;
+        quest_text.classList.remove('draw');
+        quest_text.classList.remove('collapsed');
+      }, 500);
+    }
   } else {
-    quest_block.classList.add('hidden');
+    if (quest_text.innerText != 'Draw') {
+      quest_text.classList.add('collapsed');
+      setTimeout(() => {
+        quest_text.innerHTML = 'Draw';
+        quest_text.classList.add('draw');
+        quest_text.classList.remove('collapsed');
+      }, 500);
+    }
   }
+  quest_text.classList.remove('primed');
 }
 
 function load_quest() {
@@ -67,6 +87,14 @@ function load_quest() {
       .then(response => response.text())
       .then(JSON.parse)
       .then(update_quest);
+}
+
+function draw_quest() {
+  fetch(new Request('/quest/draw'));
+}
+
+function reset_quest() {
+  fetch(new Request('/quest/reset'));
 }
 
 function connect_stream(timeout = 250) {
@@ -118,4 +146,40 @@ function hide_modal() {
     overlay.classList.add('hidden');
     form.classList.add('hidden');
   }, 250);
+}
+
+function show_quest() {
+  var quest_block = document.getElementById('quest-block');
+
+  quest_block.classList.remove('hidden');
+  setTimeout(() => quest_block.classList.add('visible'), 250);
+}
+
+function hide_quest() {
+  var quest_block = document.getElementById('quest-block');
+
+  quest_block.classList.remove('visible');
+  setTimeout(() => quest_block.classList.add('hidden'), 250);
+}
+
+function quest_action_click(event) {
+  event.stopPropagation();
+  quest_action();
+}
+
+function quest_action() {
+  var button = document.getElementById('quest-text');
+
+  if (button.classList.contains('draw')) {
+    draw_quest();
+  } else if (button.classList.contains('primed')) {
+    reset_quest();
+  } else {
+    button.classList.add('primed');
+  }
+}
+
+function quest_unprime(event) {
+  var button = document.getElementById('quest-text');
+  button.classList.remove('primed');
 }

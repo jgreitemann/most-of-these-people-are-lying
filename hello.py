@@ -60,17 +60,28 @@ def publish_players():
     sse.publish(players(), type='player_update', retry=250)
 
 
-@app.route('/reset')
-def reset():
+@app.route('/players/reset')
+def reset_players():
     Player.query.delete()
-    Draw.query.delete()
     db.session.commit()
     publish_players()
+    return 'Reset Players\n'
+
+
+@app.route('/quest/reset')
+def reset_quest():
+    Draw.query.delete()
+    db.session.commit()
     publish_quest()
-    return 'Reset'
+    return 'Reset Quest\n'
 
 
-@app.route('/add', methods=['POST'])
+@app.route('/reset')
+def reset():
+    return reset_players() + reset_quest()
+
+
+@app.route('/players/add', methods=['POST'])
 def add_post():
     data = request.form
     return add(data['name'], data['article'])
@@ -85,7 +96,7 @@ def add(name, article):
     return 'Your article "' + article + '" is entered.'
 
 
-@app.route('/pop/<int:id>')
+@app.route('/players/pop/<int:id>')
 def pop(id):
     Player.query.filter_by(id=id).delete()
     q = Draw.query.filter_by(id=id)
@@ -118,7 +129,7 @@ def publish_quest():
     sse.publish(quest(), type='quest_update', retry=250)
 
 
-@app.route('/draw')
+@app.route('/quest/draw')
 def draw():
     chosen_one = Player.query.order_by(func.random()).first()
     q = Draw.query.first()
@@ -128,7 +139,7 @@ def draw():
         db.session.add(Draw(chosen_one.id))
     db.session.commit()
     publish_quest()
-    return 'Drawn: {}'.format(chosen_one.id)
+    return 'Drawn'
 
 
 if __name__ == "__main__":

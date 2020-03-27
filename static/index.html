@@ -11,18 +11,21 @@
 
             var shortcuts = {
                 Period: show_modal,
-                Escape: hide_modal
+                Escape: hide_modal,
+                KeyD: quest_action
             };
 
             document.getElementById('add-player-button').onclick = show_modal;
             document.getElementById('modal-overlay').onclick = hide_modal;
             document.getElementById('add-player-form').onsubmit = hide_modal;
             document.getElementById('add-player-form').onclick = event => event.stopPropagation();
+            document.getElementById('quest-text').onclick = quest_action_click;
+            document.onclick = quest_unprime;
             document.addEventListener('keyup', event => event.code in shortcuts && shortcuts[event.code]());
         };
     </script>
     <link rel="stylesheet" href="static/style.css" />
-    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -39,7 +42,7 @@
     </h1>
     <ul id="player-list">
         <li id="add-player-button">
-            <form id="add-player-form" action="add" method="POST" target="iframe" class="hidden">
+            <form id="add-player-form" action="players/add" method="POST" target="iframe" class="hidden">
                 <div id="add-player-dialog">
                     <input type="text" id="name-text" name="name" placeholder="Player name">
                     <span>
@@ -56,8 +59,7 @@
         </li>
     </ul>
     <div id="quest-block" class="hidden">
-        <h3>Active Quest:</h3>
-        <h1 id="quest-text"></h1>
+        <button id="quest-text" class="collapsed"></button>
     </div>
 </body>
 
