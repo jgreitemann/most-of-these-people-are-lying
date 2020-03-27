@@ -147,5 +147,11 @@ def draw():
     return 'Drawn'
 
 
+@app.route('/tick')
+def tick():
+    sse.publish({'message': 'Tock'}, type='heartbeat')
+    return 'Tick'
+
+
 if __name__ == "__main__":
     app.run()

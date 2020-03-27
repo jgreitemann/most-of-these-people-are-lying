@@ -100,12 +100,13 @@ function reset_quest() {
 function connect_stream(timeout = 250) {
   console.log('Connecting to stream...');
   var source = new EventSource('/stream');
-  source.addEventListener('player_update', function(event) {
-    update_player_list(JSON.parse(event.data));
-  }, false);
-  source.addEventListener('quest_update', function(event) {
-    update_quest(JSON.parse(event.data));
-  }, false);
+  source.addEventListener(
+      'player_update', event => update_player_list(JSON.parse(event.data)),
+      false);
+  source.addEventListener(
+      'quest_update', event => update_quest(JSON.parse(event.data)), false);
+  source.addEventListener(
+      'heartbeat', event => tock(JSON.parse(event.data)), false);
   source.addEventListener('error', async function(event) {
     console.log('Connection lost. Trying again in ' + timeout + ' ms.');
     setTimeout(() => {
@@ -114,6 +115,16 @@ function connect_stream(timeout = 250) {
       load_quest();
     }, timeout);
   }, false);
+}
+
+function tick(event) {
+  fetch(new Request('/tick'))
+      .then(response => response.text())
+      .then(console.log);
+}
+
+function tock(json) {
+  console.log(json.message);
 }
 
 function show_modal() {

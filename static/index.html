@@ -14,6 +14,9 @@
             load_quest();
             connect_stream();
 
+            // Heartbeat
+            setInterval(tick, 5500)
+
             var shortcuts = {
                 Period: checkKeyCode(show_modal),
                 Escape: escape_action,
