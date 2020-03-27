@@ -9,11 +9,16 @@
             load_quest();
             connect_stream();
 
+            var shortcuts = {
+                Period: show_modal,
+                Escape: hide_modal
+            };
+
             document.getElementById('add-player-button').onclick = show_modal;
             document.getElementById('modal-overlay').onclick = hide_modal;
             document.getElementById('add-player-form').onsubmit = hide_modal;
             document.getElementById('add-player-form').onclick = event => event.stopPropagation();
-            document.addEventListener('keyup', event => event.code == 'Period' && show_modal());
+            document.addEventListener('keyup', event => event.code in shortcuts && shortcuts[event.code]());
         };
     </script>
     <link rel="stylesheet" href="static/style.css" />
@@ -40,10 +45,12 @@
                     <span>
                         <input type="text" id="article-text" name="article" placeholder="Wikipedia article">
                         <a target="_blank" rel="noopener noreferrer"
-                            href="https://en.wikipedia.org/wiki/Special:Random"><input type="button" id="random-button"
-                                value=""></a>
+                            href="https://en.wikipedia.org/wiki/Special:Random">
+                            <input type="button" id="random-button" value="">
+                        </a>
                     </span>
                     <input type="submit" value="Enter">
+                    <p><em>Hint:</em> Press <span>.</span> to bring up this prompt.</p>
                 </div>
             </form>
         </li>
