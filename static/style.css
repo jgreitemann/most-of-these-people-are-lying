@@ -160,3 +160,46 @@ h1, h2, h3, h4, blockquote, q, ul {
 #modal-overlay.modal {
     opacity: 1;
 }
+
+@keyframes fade-in {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.delay-1 {
+    animation: fade-in 2s ease-out;
+    animation-fill-mode: both;
+    animation-delay: 0s;
+}
+
+.delay-2 {
+    animation: fade-in 2s ease-out;
+    animation-fill-mode: both;
+    animation-delay: 0.5s;
+}
+
+.delay-3 {
+    animation: fade-in 2s ease-out;
+    animation-fill-mode: both;
+    animation-delay: 1s;
+    font-style: italic;
+}
+
+.delay-4 {
+    animation: fade-in 2s ease-out;
+    animation-fill-mode: both;
+    animation-delay: 1.5s;
+}
+
+.delay-5 {
+    animation: fade-in 2s ease-out;
+    animation-fill-mode: both;
+    animation-delay: 2s;
+}
+
+.delay-6 {
+    animation: fade-in 2s ease-out;
+    animation-fill-mode: both;
+    animation-delay: 2.5s;
+    font-weight: 900;
+}
