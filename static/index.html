@@ -4,15 +4,20 @@
 <head>
     <script type="text/javascript" src="static/motpal.js"></script>
     <script type="text/javascript">
+        function checkKeyCode(action) {
+            return event => {
+                !document.getElementById('modal-overlay').classList.contains('modal') && action(event);
+            };
+        }
         window.onload = function () {
             load_players();
             load_quest();
             connect_stream();
 
             var shortcuts = {
-                Period: show_modal,
-                Escape: hide_modal,
-                KeyD: quest_action
+                Period: checkKeyCode(show_modal),
+                Escape: escape_action,
+                KeyD: checkKeyCode(quest_action)
             };
 
             document.getElementById('add-player-button').onclick = show_modal;

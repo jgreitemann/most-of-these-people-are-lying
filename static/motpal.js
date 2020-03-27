@@ -117,6 +117,8 @@ function connect_stream(timeout = 250) {
 }
 
 function show_modal() {
+  keyCodesEnabled = true;
+
   var overlay = document.getElementById('modal-overlay');
   var form = document.getElementById('add-player-form');
   var dialog = document.getElementById('add-player-dialog');
@@ -136,6 +138,8 @@ function show_modal() {
 }
 
 function hide_modal() {
+  keyCodesEnabled = false;
+
   var overlay = document.getElementById('modal-overlay');
   var form = document.getElementById('add-player-form');
   var dialog = document.getElementById('add-player-dialog');
@@ -182,4 +186,13 @@ function quest_action() {
 function quest_unprime(event) {
   var button = document.getElementById('quest-text');
   button.classList.remove('primed');
+}
+
+function escape_action(event) {
+  var overlay = document.getElementById('modal-overlay');
+  if (overlay.classList.contains('modal')) {
+    hide_modal();
+  } else {
+    quest_unprime(event);
+  }
 }
