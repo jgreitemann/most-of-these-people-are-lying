@@ -70,9 +70,14 @@ def reset_players():
 
 @app.route('/quest/reset')
 def reset_quest():
-    Draw.query.delete()
+    q = Draw.query
+    if q.first() == None:
+        return 'No active quest\n'
+    Player.query.filter_by(id=q.first().id).delete()
+    q.delete()
     db.session.commit()
     publish_quest()
+    publish_players()
     return 'Reset Quest\n'
 
 
