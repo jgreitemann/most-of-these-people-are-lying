@@ -79,6 +79,10 @@ h1, h2, h3, h4 {
     border: none;
 }
 
+#player-list.immutable > li input[type="button"] {
+    display: none;
+}
+
 #player-list > li input[type="button"]::-moz-focus-inner {
     border: 0;
 }

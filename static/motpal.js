@@ -59,7 +59,11 @@ function delete_player(id) {
 
 function update_quest(quest) {
   var quest_button = document.getElementById('quest-button');
+  var player_list = document.getElementById('player-list');
+  var player_submit = document.getElementById('add-player-submit');
   if (quest.active) {
+    player_list.classList.add('immutable');
+    player_submit.disabled = true;
     if (quest_button.innerText != quest.article) {
       quest_button.classList.add('collapsed');
       setTimeout(() => {
@@ -69,6 +73,8 @@ function update_quest(quest) {
       }, 500);
     }
   } else {
+    player_list.classList.remove('immutable');
+    player_submit.disabled = false;
     if (quest_button.innerText != 'Draw') {
       quest_button.classList.add('collapsed');
       setTimeout(() => {
