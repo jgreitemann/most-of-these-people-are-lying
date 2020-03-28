@@ -58,27 +58,27 @@ function delete_player(id) {
 }
 
 function update_quest(quest) {
-  var quest_text = document.getElementById('quest-text');
+  var quest_button = document.getElementById('quest-button');
   if (quest.active) {
-    if (quest_text.innerText != quest.article) {
-      quest_text.classList.add('collapsed');
+    if (quest_button.innerText != quest.article) {
+      quest_button.classList.add('collapsed');
       setTimeout(() => {
-        quest_text.innerText = quest.article;
-        quest_text.classList.remove('draw');
-        quest_text.classList.remove('collapsed');
+        quest_button.innerText = quest.article;
+        quest_button.classList.remove('draw');
+        quest_button.classList.remove('collapsed');
       }, 500);
     }
   } else {
-    if (quest_text.innerText != 'Draw') {
-      quest_text.classList.add('collapsed');
+    if (quest_button.innerText != 'Draw') {
+      quest_button.classList.add('collapsed');
       setTimeout(() => {
-        quest_text.innerHTML = 'Draw';
-        quest_text.classList.add('draw');
-        quest_text.classList.remove('collapsed');
+        quest_button.innerText = 'Draw';
+        quest_button.classList.add('draw');
+        quest_button.classList.remove('collapsed');
       }, 500);
     }
   }
-  quest_text.classList.remove('primed');
+  quest_button.classList.remove('primed');
 }
 
 function load_quest() {
@@ -183,7 +183,7 @@ function quest_action_click(event) {
 }
 
 function quest_action() {
-  var button = document.getElementById('quest-text');
+  var button = document.getElementById('quest-button');
 
   if (button.classList.contains('draw')) {
     draw_quest();
@@ -195,7 +195,7 @@ function quest_action() {
 }
 
 function quest_unprime(event) {
-  var button = document.getElementById('quest-text');
+  var button = document.getElementById('quest-button');
   button.classList.remove('primed');
 }
 

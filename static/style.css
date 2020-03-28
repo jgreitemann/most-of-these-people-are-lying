@@ -20,6 +20,7 @@ h1, h2, h3, h4 {
 #player-list {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     padding: 0;
 }
 
@@ -65,8 +66,7 @@ h1, h2, h3, h4 {
 }
 
 #player-list > li input[type="button"] {
-    position: relative;
-    bottom: 4px;
+    vertical-align: top;
     background:
         url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgMGMtNi42MjcgMC0xMiA1LjM3My0xMiAxMnM1LjM3MyAxMiAxMiAxMiAxMi01LjM3MyAxMi0xMi01LjM3My0xMi0xMi0xMnptNC4xNTEgMTcuOTQzbC00LjE0My00LjEwMi00LjExNyA0LjE1OS0xLjgzMy0xLjgzMyA0LjEwNC00LjE1Ny00LjE2Mi00LjExOSAxLjgzMy0xLjgzMyA0LjE1NSA0LjEwMiA0LjEwNi00LjE2IDEuODQ5IDEuODQ5LTQuMSA0LjE0MSA0LjE1NyA0LjEwNC0xLjg0OSAxLjg0OXoiLz48L3N2Zz4=)
         no-repeat
@@ -95,6 +95,7 @@ h1, h2, h3, h4 {
 #player-list > li#add-player-button div {
     z-index: 3;
     opacity: 0;
+    width: 220px;
     word-wrap: break-word;
     cursor: initial;
     display: flex;
@@ -103,7 +104,6 @@ h1, h2, h3, h4 {
     position: absolute;
     left: 50%;
     transform: translate(calc(-50% - 2.5px), 30px);
-    width: unset;
     padding: 1em;
     background-color: rgb(239, 218, 253);
     border-radius: 10px;
@@ -119,6 +119,10 @@ h1, h2, h3, h4 {
 
 #player-list > li#add-player-button div input {
     font-size: 12pt;
+}
+
+#player-list > li#add-player-button div #article-text {
+    padding-right: calc(1.35em + 5px);
 }
 
 #player-list > li#add-player-button div.modal {
@@ -172,8 +176,9 @@ h1, h2, h3, h4 {
 
 #player-list > li#add-player-button div #random-button {
     position: absolute;
+    opacity: 0.8;
     top: calc((100% - 1.35em) / 2);
-    margin-left: calc(-1.35em - 5px);
+    margin-left: calc(-1.35em - 10px);
     width: 1.35em;
     height: 1.35em;
     background:
@@ -200,8 +205,9 @@ h1, h2, h3, h4 {
     opacity: 1;
 }
 
-#quest-text {
+#quest-button {
     display: inline-block;
+    height: 100%;
     background: none;
     cursor: pointer;
     font-family: 'Raleway', arial, sans-serif;
@@ -210,7 +216,7 @@ h1, h2, h3, h4 {
     border: solid 2px black;
     border-radius: 999px;
     padding: 10pt 46pt;
-    max-width: 800px;
+    max-width: 100%;
     overflow: hidden;
     transition:
         color 0.25s ease-in-out,
@@ -219,16 +225,16 @@ h1, h2, h3, h4 {
         border-color 0.25s ease-in-out;
 }
 
-#quest-text::-moz-focus-inner {
+#quest-button::-moz-focus-inner {
     border: 0;
 }
 
-#quest-text.collapsed {
+#quest-button.collapsed {
     color: transparent;
     max-width: 0;
 }
 
-#quest-text.primed {
+#quest-button.primed {
     color: crimson;
     border-color: crimson;
     background:
@@ -240,7 +246,7 @@ h1, h2, h3, h4 {
     padding-right: 26pt;
 }
 
-#quest-text.draw {
+#quest-button.draw {
     font-style: italic;
     background:
         url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0xMC41IDI0aC03Yy0xLjQgMC0yLjUtMS4xNC0yLjUtMi41di0xMS42NGMtLjY2Mi0uNDczLTEtMS4yMDEtMS0xLjk0MSAwLS4zNzYuMDg5LS43NS4yODktMS4xMjkgMS4wNjUtMS44OTggMi4xNTMtMy43ODMgMy4yNjUtNS42NTQuNDYyLS43MzcgMS4yMTEtMS4xMzYgMi4wNDUtMS4xMzYuNjM1IDAgLjk3Mi4yMDQgMS40NDUuNDc5LjY2Mi4zODYgOSA1LjM1MiAxMi41MTIgNy40NDEuMDg3LjA1MiAzLjM2NiAxLjk4OCAzLjQ0OSAyLjA0NS42NjMuNDkuOTk1IDEuMTk3Ljk5NSAxLjkzNCAwIC4zNzUtLjA5Mi43NDUtLjI5NSAxLjEzLTEuMDY0IDEuODk5LTIuMTUzIDMuNzg0LTMuMjY1IDUuNjU1LS41NzcuOTItMS42MTUgMS4yOS0yLjQ5NiAxLjA4OC0uMzkyLjIzNC01LjgyNiAzLjc1LTYuMjUyIDMuOTY4LS40MTMuMjEyLS43NjIuMjYtMS4xOTIuMjZtLTcuNS0xMC43NjN2OC4yNjNjMCAuMjc0LjIyMS41LjUuNWg0LjU4OGMtMS43Mi0yLjkwNi0zLjQxNy01LjgyNy01LjA4OC04Ljc2M20xLjYwNi0xLjIzOGMuMDUzLjA5MiA1LjY4MSA5Ljc5NyA1LjcyNiA5Ljg1OS4xMDguMTM5LjI5OS4xODEuNDU1LjA5OC4xNjQtLjA5MiA1LjA4MS0zLjI1MSA1LjA4MS0zLjI1MS0uNjM5LS4zNzctOC4xNDQtNC44NTEtMTEuMjYyLTYuNzA2bS42NTktOS44MjljLS45MTMgMS40NTYtMy4xOTkgNS41MjUtMy4yMzUgNS42MS0uMDcuMTcxLS4wMDguMzY2LjE0OS40NjQuMjAxLjEyIDE2LjAyMyA5LjU0NyAxNi4xNzcgOS41NzEuMTUxLjAyMi4yOTctLjA0NS4zNzctLjE3NC45NDItMS41ODQgMy4yMDYtNS41NSAzLjIzMi01LjYwMS4wNjktLjE3Mi4wMDctLjM2Ny0uMTUtLjQ2NS0uMjAxLS4xMi0xNS45ODMtOS40OTktMTYuMDktOS41NDYtLjE4LS4wNzQtLjM2NS0uMDAyLS40Ni4xNDFtMS41NTcgMi42OTVjMS4xMDQgMCAyIC44OTcgMiAyIDAgMS4xMDQtLjg5NiAyLTIgMnMtMi0uODk2LTItMmMwLTEuMTAzLjg5Ni0yIDItMiIvPjwvc3ZnPg==)

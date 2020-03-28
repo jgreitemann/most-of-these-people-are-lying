@@ -15,7 +15,7 @@
             connect_stream();
 
             // Heartbeat
-            setInterval(tick, 5500)
+            setInterval(tick, 50000);
 
             var shortcuts = {
                 Period: checkKeyCode(show_modal),
@@ -27,11 +27,12 @@
             document.getElementById('modal-overlay').onclick = hide_modal;
             document.getElementById('add-player-form').onsubmit = hide_modal;
             document.getElementById('add-player-form').onclick = event => event.stopPropagation();
-            document.getElementById('quest-text').onclick = quest_action_click;
+            document.getElementById('quest-button').onclick = quest_action_click;
             document.onclick = quest_unprime;
             document.addEventListener('keyup', event => event.code in shortcuts && shortcuts[event.code]());
         };
     </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="static/style.css" />
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,700&display=swap" rel="stylesheet">
 </head>
@@ -67,7 +68,7 @@
         </li>
     </ul>
     <div id="quest-block" class="hidden">
-        <button id="quest-text" class="collapsed"></button>
+        <button id="quest-button" class="collapsed"></button>
     </div>
 </body>
 

@@ -117,9 +117,13 @@ def pop(id):
 
 
 def quest():
-    q = Draw.query.first()
-    if q != None:
-        p = Player.query.filter_by(id=q.id).first()
+    q = Draw.query
+    if q.first() != None:
+        p = Player.query.filter_by(id=q.first().id).first()
+        if p == None:
+            q.delete()
+            publish_quest()
+            return {'active': False}
         return {'active': True, 'article': p.article}
     else:
         return {'active': False}
