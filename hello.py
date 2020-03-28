@@ -93,27 +93,28 @@ def add_post():
 
 
 def add(name, article):
-    Player.query.filter_by(name=name).delete()
-    p = Player(name, article)
-    db.session.add(p)
-    db.session.commit()
-    publish_players()
-    return 'Your article "' + article + '" is entered.'
+    q = Draw.query.first()
+    if q == None:
+        Player.query.filter_by(name=name).delete()
+        p = Player(name, article)
+        db.session.add(p)
+        db.session.commit()
+        publish_players()
+        return 'Your article "' + article + '" is entered.'
+    else:
+        return 'Game in progress'
 
 
 @app.route('/players/pop/<int:id>')
 def pop(id):
-    Player.query.filter_by(id=id).delete()
-    q = Draw.query.filter_by(id=id)
-    deleted_quest = False
-    if q.first() != None:
-        q.delete()
-        deleted_quest = True
-    db.session.commit()
-    publish_players()
-    if deleted_quest:
-        publish_quest()
-    return 'Done'
+    q = Draw.query.first()
+    if q == None:
+        Player.query.filter_by(id=id).delete()
+        db.session.commit()
+        publish_players()
+        return 'Popped'
+    else:
+        return 'Game in progress'
 
 
 def quest():
@@ -140,15 +141,15 @@ def publish_quest():
 
 @app.route('/quest/draw')
 def draw():
-    chosen_one = Player.query.order_by(func.random()).first()
     q = Draw.query.first()
-    if q != None:
-        q.id = chosen_one.id
-    else:
+    if q == None:
+        chosen_one = Player.query.order_by(func.random()).first()
         db.session.add(Draw(chosen_one.id))
-    db.session.commit()
-    publish_quest()
-    return 'Drawn'
+        db.session.commit()
+        publish_quest()
+        return 'Drawn'
+    else:
+        return 'Game in progress!'
 
 
 @app.route('/tick')
