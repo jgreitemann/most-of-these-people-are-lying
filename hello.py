@@ -57,7 +57,7 @@ def players_json():
 
 
 def publish_players():
-    sse.publish(players(), type='player_update', retry=250)
+    sse.publish(players(), type='player_update')
 
 
 @app.route('/players/reset')
@@ -136,7 +136,7 @@ def quest_json():
 
 
 def publish_quest():
-    sse.publish(quest(), type='quest_update', retry=250)
+    sse.publish(quest(), type='quest_update')
 
 
 @app.route('/quest/draw')

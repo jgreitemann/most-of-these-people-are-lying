@@ -116,6 +116,7 @@ function connect_stream(timeout = 250) {
   source.addEventListener('error', async function(event) {
     console.log('Connection lost. Trying again in ' + timeout + ' ms.');
     setTimeout(() => {
+      source.close();
       connect_stream(timeout);
       load_players();
       load_quest();
