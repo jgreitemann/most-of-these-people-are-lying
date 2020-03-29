@@ -66,6 +66,7 @@ function update_quest(quest) {
     player_submit.disabled = true;
     if (quest_button.innerText != quest.article) {
       quest_button.classList.add('collapsed');
+      quest_button.classList.remove('primed');
       setTimeout(() => {
         quest_button.innerText = quest.article;
         quest_button.classList.remove('draw');
@@ -77,6 +78,7 @@ function update_quest(quest) {
     player_submit.disabled = false;
     if (quest_button.innerText != 'Draw') {
       quest_button.classList.add('collapsed');
+      quest_button.classList.remove('primed');
       setTimeout(() => {
         quest_button.innerText = 'Draw';
         quest_button.classList.add('draw');
@@ -84,7 +86,6 @@ function update_quest(quest) {
       }, 500);
     }
   }
-  quest_button.classList.remove('primed');
 }
 
 function load_quest() {
