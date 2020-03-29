@@ -143,11 +143,14 @@ def publish_quest():
 def draw():
     q = Draw.query.first()
     if q == None:
-        chosen_one = Player.query.order_by(func.random()).first()
-        db.session.add(Draw(chosen_one.id))
-        db.session.commit()
-        publish_quest()
-        return 'Drawn'
+        if Player.query.count() >= 2:
+            chosen_one = Player.query.order_by(func.random()).first()
+            db.session.add(Draw(chosen_one.id))
+            db.session.commit()
+            publish_quest()
+            return 'Drawn'
+        else:
+            return 'Not enough players!'
     else:
         return 'Game in progress!'
 
